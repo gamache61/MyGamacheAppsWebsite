@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Find the 3 Mistakes - Winter Driving | Gamache Apps</title>
+<meta name="description" content="Watched the winter driving video? Tick the 3 mistakes the driver made and check your answers.">
+<style>
+*{box-sizing:border-box}
+body{background:#0d0f14;color:#eef1f7;font-family:system-ui,sans-serif;margin:0;line-height:1.4}
+.wrap{max-width:640px;margin:0 auto;padding:22px 16px 40px}
+.brand{color:#9aa3b5;text-decoration:none;font-weight:700;font-size:.95rem}
+h1{font-size:1.9rem;margin:14px 0 6px;line-height:1.15}
+h1 span{color:#ffb627}
+.sub{color:#9aa3b5;margin:0 0 18px}
+.count{display:inline-block;background:#ffb62722;color:#ffb627;border:1px solid #ffb62744;border-radius:99px;padding:4px 12px;font-weight:700;font-size:.85rem;margin-bottom:12px}
+.item{display:flex;gap:12px;align-items:center;background:#1a1f2b;border:2px solid #2a3142;border-radius:14px;padding:14px;margin:8px 0;cursor:pointer;font-size:1.02rem;font-weight:600;user-select:none;-webkit-user-select:none}
+.item .bx{flex:0 0 28px;height:28px;border-radius:8px;border:2px solid #4a556b;display:grid;place-items:center;font-weight:900;color:#111}
+.item.on{border-color:#ffb627;background:#ffb62714}
+.item.on .bx{background:#ffb627;border-color:#ffb627}
+.item.lock{cursor:default}
+.btn{display:block;width:100%;padding:15px;border-radius:12px;border:0;background:#ffb627;color:#111;font-weight:800;font-size:1.1rem;cursor:pointer;margin-top:16px;text-align:center;text-decoration:none}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.alt{background:#151923;color:#eef1f7;border:1px solid #2a3142}
+.btn.go{background:#3ddc97;color:#06281a}
+.res{display:none;border-radius:16px;padding:20px;margin-top:18px;text-align:center}
+.res.show{display:block}
+.res.win{background:#3ddc9718;border:2px solid #3ddc97}
+.res.lose{background:#ff5a5a18;border:2px solid #ff5a5a}
+.res h2{margin:0 0 6px;font-size:1.7rem}
+.res.win h2{color:#3ddc97}.res.lose h2{color:#ff5a5a}
+.res p{margin:6px 0;color:#cfd6e4}
+.why{text-align:left;margin:14px 0 0;padding:0;list-style:none}
+.why li{background:#151923;border:1px solid #2a3142;border-radius:12px;padding:12px;margin:8px 0}
+.why b{display:block;color:#ffb627;margin-bottom:3px}
+.foot{text-align:center;color:#6f7a8f;font-size:.8rem;margin-top:26px}
+</style></head><body>
+<div class="wrap">
+  <a class="brand" href="https://gamache61.github.io/MyGamacheAppsWebsite/">← Gamache Apps</a>
+  <h1>Find the <span>3 mistakes</span></h1>
+  <p class="sub">You watched three winter jackknifes. Tick the 3 mistakes the driver made, then check your answers.</p>
+  <div class="count" id="count">0 of 3 picked</div>
+  <div id="list"></div>
+  <button class="btn" id="check" disabled>Check my answers</button>
+  <div class="res" id="res"></div>
+  <div class="foot">© Gamache Apps · For educational / training use only — always follow your training, company policy and local regulations.</div>
+</div>
+<script>
+(function(){
+  var ITEMS=[
+    {t:"Driving too fast on a snow-covered road",ok:1},
+    {t:"Engine brake left ON on an icy road",ok:1},
+    {t:"Hitting the brakes hard on ice",ok:1},
+    {t:"Following too close to the vehicle ahead"},
+    {t:"Using cruise control on a slippery road"},
+    {t:"Driving with high beams on in falling snow"},
+    {t:"Passing a snow plow"},
+    {t:"Changing lanes on a bridge"},
+    {t:"Downshifting on an icy hill"},
+    {t:"Lights and reflectors covered in snow"},
+    {t:"Talking on a hand-held phone"}
+  ];
+  var WHY=[
+    ["Clip 1 — Too fast for the snow","The truck was doing close to 100 km/h on a snow-covered road. Match your speed to the road surface, not the posted limit."],
+    ["Clip 2 — Engine brake ON on ice","The road looked like wet pavement but it was black ice. The engine brake slows only the drive wheels, so on ice it can lock them and fold the tractor."],
+    ["Clip 3 — Brakes on ice","The brake lights came on while the truck was on ice. Locked wheels lose their side grip and the trailer swings out."]
+  ];
+  for(var i=ITEMS.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=ITEMS[i];ITEMS[i]=ITEMS[j];ITEMS[j]=x;}
+  var list=document.getElementById('list'),count=document.getElementById('count'),check=document.getElementById('check'),res=document.getElementById('res');
+  var picked={},locked=false;
+  function n(){var c=0;for(var k in picked)if(picked[k])c++;return c;}
+  function draw(){
+    list.innerHTML='';
+    ITEMS.forEach(function(it,i){
+      var d=document.createElement('div');d.className='item'+(picked[i]?' on':'')+(locked?' lock':'');
+      d.innerHTML='<div class="bx">'+(picked[i]?'✓':'')+'</div><div></div>';
+      d.lastChild.textContent=it.t;
+      d.onclick=function(){
+        if(locked)return;
+        if(!picked[i]&&n()>=3)return;
+        picked[i]=!picked[i];res.className='res';draw();
+      };
+      list.appendChild(d);
+    });
+    count.textContent=n()+' of 3 picked';
+    check.disabled=locked||n()!==3;
+  }
+  check.onclick=function(){
+    var right=ITEMS.every(function(it,i){return !!it.ok===!!picked[i];});
+    if(right){
+      locked=true;draw();check.style.display='none';
+      res.className='res win show';
+      res.innerHTML='<h2>🎉 Congratulations!</h2><p>You found all 3 mistakes.</p><ul class="why">'+WHY.map(function(w){return '<li><b>'+w[0]+'</b>'+w[1]+'</li>';}).join('')+'</ul><a class="btn go" href="https://gamache61.github.io/MyGamacheAppsWebsite/">Practice it yourself — Winter Driving Trainer</a>';
+    }else{
+      res.className='res lose show';
+      res.innerHTML='<h2>❌ Wrong</h2><p>That\'s not all 3. Watch the video again and try once more.</p><button class="btn alt" id="again">Try again</button>';
+      document.getElementById('again').onclick=function(){picked={};res.className='res';draw();window.scrollTo(0,0);};
+    }
+    res.scrollIntoView({behavior:'smooth',block:'nearest'});
+  };
+  draw();
+})();
+</script>
+</body></html>
